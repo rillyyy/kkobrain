@@ -9,6 +9,9 @@ import "swiper/css/autoplay";
 import { useEffect, useRef, useState } from "react";
 
 export const Header = () => {
+  // 스크롤 상태 여부
+  const [isScroll, setIsScroll] = useState(false);
+
   // 모바일 메뉴 참조
   const iconMore = useRef(null);
   const mbMenu = useRef(null);
@@ -67,13 +70,30 @@ export const Header = () => {
       }
     });
 
+    // 스크롤이 되는 경우 체크
+    window.addEventListener("scroll", function () {
+      let scrollPositionY = window.scrollY;
+      // console.log("스크롤", scrollPositionY);
+      if (scrollPositionY > 0) {
+        setIsScroll(true); // 스크롤바가 이동했다.
+      } else {
+        setIsScroll(false); // 스크롤바가 상단 위치했다.
+      }
+    });
+
+
     return () => {
       window.removeEventListener("resize");
     };
   }, []);
+
+  useEffect(() => {
+    console.log(isOpen);
+  }, [isOpen]);
+
   return (
     <>
-      <header className="header">
+      <header className={isScroll ? "header header-b-line" : "header"}>
         <div className="inner space-between align-items-center">
           <a
             href="#"
@@ -171,7 +191,7 @@ export const Header = () => {
         </div>
       </header>
       <div className={isOpen ? "mb-menu active" : "mb-menu"} ref={mbMenu}>
-        <div className="mb-inner" ref={mbInner}>
+        <div className={isOpen ? "mb-inner active" : "mb-inner"} ref={mbInner}>
           <ul className="mb-nav">
             <li>
               <a href="#" alt="카카오브레인 소식" aria-label="카카오브레인 소식">

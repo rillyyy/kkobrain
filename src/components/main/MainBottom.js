@@ -1,11 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CardNews } from "../card/CardNews";
+import SwiperInit from "swiper"; // 이름이 겹치므로 Swiper를 SwiperInit 으로 바꾸어서 import
+import { SwiperSlide, Swiper } from "swiper/react";
+import "swiper/css";
 
 export const MainBottom = () => {
+  // 이미지 경로
+  const path = "./images";
   // News 데이터 관리
   const [newsList, setNewsList] = useState([]);
   // Crew 데이터 관리
   const [crewNewsList, setCrewNewsList] = useState([]);
+  // CardList 데이터 관리
+  const [cardList, setCardList] = useState([]);
+  // CardSwiper 참조
+  const cardSwiper = useRef(null);
 
   const getNewsList = () => {
     // 1. json 호출 하고 성공하면
@@ -44,17 +53,57 @@ export const MainBottom = () => {
         return res.json();
       })
       .then((data) => {
-        console.log(data);
+        // console.log(data);
+        setCardList(data);
       })
       .catch((err) => {
         console.log(err);
       });
   };
 
+  const swiperOption = {
+    spaceBetween: 15,
+    slidesPerView: 4,
+    loop: true,
+    onInit: (swiper) => {
+      cardSwiper.current = swiper;
+    },
+  };
+
   useEffect(() => {
     getNewsList();
     getCrewNewsList();
     getCardList();
+
+    // 초기 로딩시 처리 필요
+    const windowWidth = window.innerWidth;
+    if (windowWidth < 1024) {
+      if (cardSwiper.current.destroyed) {
+        cardSwiper.current = new SwiperInit(".swCards", swiperOption);
+      }
+    } else {
+      if (cardSwiper.current) {
+        cardSwiper.current.destroy();
+      }
+    }
+
+    window.addEventListener("resize", function () {
+      const windowWidth = window.innerWidth;
+      if (windowWidth < 1024) {
+        if (cardSwiper.current.destroyed) {
+          cardSwiper.current = new SwiperInit(".swCards", swiperOption);
+        }
+      } else {
+        if (cardSwiper.current) {
+          cardSwiper.current.destroy();
+        }
+      }
+    });
+
+    // 클린업 함수
+    return () => {
+      window.removeEventListener("resize");
+    };
   }, []);
 
   return (
@@ -88,11 +137,27 @@ export const MainBottom = () => {
         <div className="main-cards-wrap">
           <h3>폴더 📁</h3>
           <div className="main-cards-slide">
-            {/* <!-- Start 카드 슬라이드 --> */}
-            <div className="swiper swCards">
-              <div className="swiper-wrapper">{/* <!-- JS Json 연동 --> */}</div>
-            </div>
-            {/* <!-- End 카드 슬라이드 --> */}
+            <Swiper className="swCards" {...swiperOption}>
+              {cardList.map((item) => {
+                return (
+                  <SwiperSlide key={item.id}>
+                    <a
+                      href={item.link}
+                      data-id={item.id}
+                      className="main-card"
+                      style={{
+                        background: `url('${path}/${item.imgpath}') no-repeat center`,
+                        backgroundSize: "cover",
+                      }}
+                    >
+                      <p className="main-card-cate">
+                        {item.cardname} <span>{item.cardno}</span>
+                      </p>
+                    </a>
+                  </SwiperSlide>
+                );
+              })}
+            </Swiper>
           </div>
 
           <div className="bt-wrap">

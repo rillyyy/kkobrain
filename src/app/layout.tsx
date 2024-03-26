@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
 <html lang="ko">
+        
   <head>
     <meta name="theme-color" content="#000000" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
@@ -26,3 +27,4 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   );
 }
+ 

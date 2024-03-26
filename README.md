@@ -18,5 +18,8 @@
 ## 4. 프론트엔드/Next.js
 
 - Next.js 마이그레이션 (https://kkobrain-chi.vercel.app/)
+<<<<<<< HEAD
 
 ## 5. 네이버 등록 및 SEO 적용
+=======
+>>>>>>> e74c592fb30edd573dfe2a4d22777a306ca50329

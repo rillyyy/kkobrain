@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
+        
       <head></head>
       <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
